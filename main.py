@@ -1,6 +1,8 @@
 import pygame
 import tank
 
+bullets = []
+
 # pygame setup
 pygame.init()
 screen = pygame.display.set_mode((1280, 720))
@@ -17,20 +19,27 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    if pygame.key.get_pressed()[pygame.K_ESCAPE]:
-        running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            bullets.append(player.shoot())
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("purple")
 
-    # pygame.draw.circle(screen, "red", player_pos, 40)
+    keys = pygame.key.get_pressed()
 
-    # update the player
+    if keys[pygame.K_ESCAPE]:
+        running = False
+
+    if bullets:
+        for bullet in bullets:
+            bullet.update(dt)
+            bullet.draw()
+            if bullet.pos.x < 0 or bullet.pos.x > screen.get_width() or bullet.pos.y < 0 or bullet.pos.y > screen.get_height():
+                bullets.remove(bullet)
+
     player.update(dt)
     player.draw()
 
-    # flip() the display to put your work on screen
     pygame.display.flip()
 
     # limits FPS to 60

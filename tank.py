@@ -1,5 +1,7 @@
 import pygame
+import tank_shell
 import math
+import copy
 
 
 class Tank:
@@ -37,6 +39,9 @@ class Tank:
 
         mouse_pos = pygame.mouse.get_pos()
         self.turret_angle = math.degrees(math.atan2(-(mouse_pos[1] - self.pos.y), mouse_pos[0] - self.pos.x))
+
+    def shoot(self):
+        return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90)
 
     def draw(self):
         # Rotate the hull
