@@ -17,12 +17,15 @@ class Tank:
         width, height = self.original_hull.get_size()
         self.original_hull = pygame.transform.scale(self.original_hull, (width * 0.15, height * 0.15))
 
+        self._rect = self.original_hull.get_rect()
+
         self.original_turret = pygame.image.load("assets/turret.png").convert_alpha()
         width, height = self.original_turret.get_size()
         self.original_turret = pygame.transform.scale(self.original_turret, (width * 0.40, height * 0.40))
 
         self.hull = self.original_hull
         self.turret = self.original_turret
+        self._rect.center = self.pos
 
     def update(self, dt):
         keys = pygame.key.get_pressed()
@@ -41,7 +44,7 @@ class Tank:
         self.turret_angle = math.degrees(math.atan2(-(mouse_pos[1] - self.pos.y), mouse_pos[0] - self.pos.x))
 
     def shoot(self):
-        return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90)
+        return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90, owner=self)
 
     def draw(self):
         # Rotate the hull
@@ -55,6 +58,16 @@ class Tank:
         # Blit the rotated hull and turret to the screen
         self.screen.blit(rotated_hull, rotated_hull_rect)
         self.screen.blit(rotated_turret, rotated_turret_rect)
+
+        self._rect.center = self.pos
+
+    @property
+    def rect(self):
+        return self._rect
+
+    @rect.setter
+    def rect(self, value):
+        self._rect = value
 
     @property
     def pos(self):

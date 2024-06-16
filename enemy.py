@@ -16,6 +16,9 @@ class EnemyTank:
         width, height = self.original_hull.get_size()
         self.original_hull = pygame.transform.scale(self.original_hull, (width * 0.15, height * 0.15))
 
+        self._rect = self.original_hull.get_rect()
+        self._rect.center = self.pos
+
         self.original_turret = pygame.image.load("assets/turret.png").convert_alpha()
         width, height = self.original_turret.get_size()
         self.original_turret = pygame.transform.scale(self.original_turret, (width * 0.40, height * 0.40))
@@ -24,7 +27,7 @@ class EnemyTank:
         self.turret = self.original_turret
 
     def update(self, dt):
-        pass
+        self._rect.center = self.pos
 
     def shoot(self):
         return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90)
@@ -41,6 +44,16 @@ class EnemyTank:
         # Blit the rotated hull and turret to the screen
         self.screen.blit(rotated_hull, rotated_hull_rect)
         self.screen.blit(rotated_turret, rotated_turret_rect)
+
+        self._rect.center = self.pos
+
+    @property
+    def rect(self):
+        return self._rect
+
+    @rect.setter
+    def rect(self, value):
+        self._rect = value
 
     @property
     def pos(self):
