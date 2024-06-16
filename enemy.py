@@ -1,10 +1,9 @@
 import pygame
-import tank_shell
-import math
 import copy
+import tank_shell
 
 
-class Tank:
+class EnemyTank:
     def __init__(self, screen, x, y):
         self.screen = screen
         self._pos = pygame.Vector2(x, y)
@@ -25,20 +24,7 @@ class Tank:
         self.turret = self.original_turret
 
     def update(self, dt):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]:
-            self.pos.y -= self.speed * dt * math.cos(math.radians(self.hull_angle))
-            self.pos.x -= self.speed * dt * math.sin(math.radians(self.hull_angle))
-        if keys[pygame.K_s]:
-            self.pos.y += self.speed * dt * math.cos(math.radians(self.hull_angle))
-            self.pos.x += self.speed * dt * math.sin(math.radians(self.hull_angle))
-        if keys[pygame.K_a]:
-            self.hull_angle += 100 * dt
-        if keys[pygame.K_d]:
-            self.hull_angle += -100 * dt
-
-        mouse_pos = pygame.mouse.get_pos()
-        self.turret_angle = math.degrees(math.atan2(-(mouse_pos[1] - self.pos.y), mouse_pos[0] - self.pos.x))
+        pass
 
     def shoot(self):
         return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90)
@@ -87,4 +73,3 @@ class Tank:
     @speed.setter
     def speed(self, value):
         self._speed = value
-

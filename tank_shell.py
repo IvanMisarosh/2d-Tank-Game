@@ -1,13 +1,12 @@
 import pygame
 import math
 
-
 class Shell:
     def __init__(self, screen, pos, angle):
         self.screen = screen
-        self.pos = pos
-        self.angle = angle
-        self.speed = 1000
+        self._pos = pos
+        self._angle = angle
+        self._speed = 1000
         self.image = pygame.image.load("assets/tank_shell.png").convert_alpha()
         self.image = pygame.transform.rotate(self.image, 90)
         width, height = self.image.get_size()
@@ -21,3 +20,27 @@ class Shell:
         rotated_image = pygame.transform.rotate(self.image, self.angle)
         rotated_rect = rotated_image.get_rect(center=self.pos)
         self.screen.blit(rotated_image, rotated_rect)
+
+    @property
+    def pos(self):
+        return self._pos
+
+    @pos.setter
+    def pos(self, value):
+        self._pos = value
+
+    @property
+    def angle(self):
+        return self._angle
+
+    @angle.setter
+    def angle(self, value):
+        self._angle = value
+
+    @property
+    def speed(self):
+        return self._speed
+
+    @speed.setter
+    def speed(self, value):
+        self._speed = value

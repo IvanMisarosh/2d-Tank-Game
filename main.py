@@ -1,5 +1,6 @@
 import pygame
 import tank
+import enemy
 
 bullets = []
 
@@ -12,6 +13,9 @@ dt = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 player = tank.Tank(screen, player_pos.x, player_pos.y)
+
+enenmy_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+enemy = enemy.EnemyTank(screen, enenmy_pos.x, enenmy_pos.y)
 
 while running:
     # poll for events
@@ -39,6 +43,9 @@ while running:
 
     player.update(dt)
     player.draw()
+
+    enemy.update(dt)
+    enemy.draw()
 
     pygame.display.flip()
 
