@@ -5,7 +5,8 @@ import copy
 
 
 class Tank:
-    def __init__(self, screen, x, y):
+    def __init__(self, game, screen, x, y):
+        self.game = game
         self.screen = screen
         self._pos = pygame.Vector2(x, y)
         self._hull_angle = 0
@@ -18,17 +19,37 @@ class Tank:
         self.original_hull = pygame.transform.scale(self.original_hull, (width * 0.15, height * 0.15))
 
         self._rect = self.original_hull.get_rect()
+        self._mask = pygame.mask.from_surface(self.original_hull)
 
         self.original_turret = pygame.image.load("assets/turret.png").convert_alpha()
         width, height = self.original_turret.get_size()
         self.original_turret = pygame.transform.scale(self.original_turret, (width * 0.40, height * 0.40))
+        self._turret_rect = self.original_turret.get_rect()
 
         self.hull = self.original_hull
         self.turret = self.original_turret
         self._rect.center = self.pos
 
-    def update(self, dt):
-        keys = pygame.key.get_pressed()
+    def update(self, keys, mouse_pos, dt):
+        if keys:
+            self.move(keys, dt)
+
+        self.update_turret(mouse_pos)
+
+    def update_turret(self, mouse_pos):
+        self.turret_angle = math.degrees(math.atan2(-(mouse_pos[1] - self.pos.y), mouse_pos[0] - self.pos.x))
+        # Rotate the turret
+        self.turret = pygame.transform.rotate(self.original_turret, self.turret_angle - 90)
+        self.turret_rect = self.turret.get_rect(center=self.pos)
+
+    def check_collision(self, other):
+        # return self.mask.overlap(other.mask, (int(other.pos.x - self.pos.x), int(other.pos.y - self.pos.y)))
+        return pygame.sprite.collide_mask(self, other)
+
+    def move(self, keys, dt):
+        original_pos = self.pos.copy()  # Copy the original position to revert if collision occurs
+        original_hull_angle = self.hull_angle
+
         if keys[pygame.K_w]:
             self.pos.y -= self.speed * dt * math.cos(math.radians(self.hull_angle))
             self.pos.x -= self.speed * dt * math.sin(math.radians(self.hull_angle))
@@ -38,28 +59,43 @@ class Tank:
         if keys[pygame.K_a]:
             self.hull_angle += 100 * dt
         if keys[pygame.K_d]:
-            self.hull_angle += -100 * dt
+            self.hull_angle -= 100 * dt
 
-        mouse_pos = pygame.mouse.get_pos()
-        self.turret_angle = math.degrees(math.atan2(-(mouse_pos[1] - self.pos.y), mouse_pos[0] - self.pos.x))
+        self.hull = pygame.transform.rotate(self.original_hull, self.hull_angle)
+        self._rect = self.hull.get_rect(center=self.pos)
+
+        if self.game.check_player_collision():
+            self.pos = original_pos
+            self.hull_angle = original_hull_angle
 
     def shoot(self):
         return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90, owner=self)
 
     def draw(self):
-        # Rotate the hull
-        rotated_hull = pygame.transform.rotate(self.original_hull, self.hull_angle)
-        rotated_hull_rect = rotated_hull.get_rect(center=self.pos)
-
-        # Rotate the turret
-        rotated_turret = pygame.transform.rotate(self.original_turret, self.turret_angle - 90)
-        rotated_turret_rect = rotated_turret.get_rect(center=self.pos)
-
         # Blit the rotated hull and turret to the screen
-        self.screen.blit(rotated_hull, rotated_hull_rect)
-        self.screen.blit(rotated_turret, rotated_turret_rect)
+        self.screen.blit(self.hull, self._rect)
+        self.screen.blit(self.turret, self.turret_rect)
 
         self._rect.center = self.pos
+        self._mask = pygame.mask.from_surface(self.hull)
+
+        # self.screen.blit(pygame.mask.from_surface(self.hull).to_surface(), self._rect)
+
+    @property
+    def turret_rect(self):
+        return self._turret_rect
+
+    @turret_rect.setter
+    def turret_rect(self, value):
+        self._turret_rect = value
+
+    @property
+    def mask(self):
+        return self._mask
+
+    @mask.setter
+    def mask(self, value):
+        self._mask = value
 
     @property
     def rect(self):

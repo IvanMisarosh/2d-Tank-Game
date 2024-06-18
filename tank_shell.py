@@ -9,24 +9,37 @@ class Shell:
         self._pos = pos
         self._angle = angle
         self._speed = 1000
-        self.image = pygame.image.load("assets/tank_shell.png").convert_alpha()
-        self.image = pygame.transform.rotate(self.image, 90)
-        width, height = self.image.get_size()
-        self.image = pygame.transform.scale(self.image, (width * 0.04, height * 0.04))
+        self.original_image = pygame.image.load("assets/tank_shell.png").convert_alpha()
+        width, height = self.original_image.get_size()
+        self.original_image = pygame.transform.scale(self.original_image, (width * 0.04, height * 0.04))
+        self.image = self.original_image
 
         self._rect = self.image.get_rect()
         self._rect.center = self.pos
+        self._mask = pygame.mask.from_surface(self.image)
 
     def update(self, dt):
         self.pos.y -= self.speed * dt * math.cos(math.radians(self.angle))
         self.pos.x -= self.speed * dt * math.sin(math.radians(self.angle))
 
-    def draw(self):
-        rotated_image = pygame.transform.rotate(self.image, self.angle)
-        rotated_rect = rotated_image.get_rect(center=self.pos)
-        self.screen.blit(rotated_image, rotated_rect)
+        self.image = pygame.transform.rotate(self.original_image, self.angle + 90)
+        self._rect = self.image.get_rect(center=self.pos)
 
-        self._rect.center = self.pos
+    def draw(self):
+        self.screen.blit(self.image, self._rect)
+        self._mask = pygame.mask.from_surface(self.image)
+
+    def check_collision(self, other):
+        if self.rect.colliderect(other.rect):
+            return pygame.sprite.collide_mask(self, other)
+
+    @property
+    def mask(self):
+        return self._mask
+
+    @mask.setter
+    def mask(self, value):
+        self._mask = value
 
     @property
     def rect(self):
