@@ -18,15 +18,6 @@ class Map:
         self.tile_height = self.map.tileheight
         self.tile_sprites = pygame.sprite.Group()
 
-        self.create_tile_sprites()
-
-    def create_tile_sprites(self):
-        for layer in self.map.visible_layers:
-            for x, y, gid in layer:
-                tile = self.map.get_tile_image_by_gid(gid)
-                if tile:
-                    self.tile_sprites.add(Tile(tile, (x * self.map.tilewidth, y * self.map.tileheight)))
-
     def create_surface(self):
         # Create a surface with the same size as the map
         map_width = self.map.width * self.map.tilewidth
@@ -59,7 +50,7 @@ class Map:
         for layer in self.map.layers:
             if isinstance(layer, pytmx.TiledTileLayer):  # Ensure we only check tile layers
                 tile_properties = self.get_tile_properties(x, y, layer.name)
-                # if tile_properties and tile_properties.get('is_obstacle'):
-                #     return True
+                if tile_properties and tile_properties.get('is_obstacle'):
+                    return True
         return False
 

@@ -26,8 +26,10 @@ class Shell:
         self._rect = self.image.get_rect(center=self.pos)
         self._mask = pygame.mask.from_surface(self.image)
 
-    def draw(self):
-        self.screen.blit(self.image, self._rect)
+    def draw(self, offset):
+        # self.screen.blit(self.image, self._rect)
+        screen_offset = self.rect.topleft - offset
+        self.screen.blit(self.image, screen_offset)
 
     def check_collision(self, other):
         if self.rect.colliderect(other.rect):

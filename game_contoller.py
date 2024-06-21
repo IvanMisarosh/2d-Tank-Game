@@ -35,8 +35,7 @@ class GameController:
 
     def update(self, keys, mouse_pos, dt):
 
-        # self.camera.update()
-
+        self.camera.centre_target_camera(self.player)
         if keys[pygame.K_g]:
             self.spawn_enemy()
 
@@ -76,7 +75,7 @@ class GameController:
 
     def draw(self):
         # self.camera.update(self.clock.tick(60) / 1000)
-        self.camera.draw_2()
+        self.camera.draw()
 
     def is_on_screen(self, obj):
         return 0 <= obj.pos.x <= self.screen.get_width() and 0 <= obj.pos.y <= self.screen.get_height()

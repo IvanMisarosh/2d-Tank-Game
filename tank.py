@@ -88,10 +88,12 @@ class Tank:
     def shoot(self):
         return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90, owner=self)
 
-    def draw(self):
-        # Blit the rotated hull and turret to the screen
-        self.screen.blit(self.hull, self._rect)
-        self.screen.blit(self.turret, self.turret_rect)
+    def draw(self, offset):
+        screen_hull_offset = self.rect.topleft - offset
+        self.screen.blit(self.hull, screen_hull_offset)
+
+        screen_turret_offset = self.turret_rect.topleft - offset
+        self.screen.blit(self.turret, screen_turret_offset)
 
     @property
     def turret_rect(self):

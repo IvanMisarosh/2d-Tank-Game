@@ -32,10 +32,6 @@ class EnemyTank:
     def update(self, dt):
         self._rect.center = self.pos
 
-    def shoot(self):
-        return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90)
-
-    def draw(self):
         # Rotate the hull
         self.hull = pygame.transform.rotate(self.original_hull, self.hull_angle)
         self._rect = self.hull.get_rect(center=self.pos)
@@ -44,15 +40,23 @@ class EnemyTank:
         self.turret = pygame.transform.rotate(self.original_turret, self.turret_angle - 90)
         self.turret_rect = self.turret.get_rect(center=self.pos)
 
-        # Blit the rotated hull and turret to the screen
-        self.screen.blit(self.hull, self._rect)
-        self.screen.blit(self.turret, self.turret_rect)
+        # Rotate the hull
+        self.hull = pygame.transform.rotate(self.original_hull, self.hull_angle)
+        self._rect = self.hull.get_rect(center=self.pos)
 
-        self._rect.center = self.pos
-        self.turret_rect.center = self.pos
-        self._mask = pygame.mask.from_surface(self.hull)
+        # Rotate the turret
+        self.turret = pygame.transform.rotate(self.original_turret, self.turret_angle - 90)
+        self.turret_rect = self.turret.get_rect(center=self.pos)
 
-        # self.screen.blit(pygame.mask.from_surface(self.hull).to_surface(), self._rect)
+    def shoot(self):
+        return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90)
+
+    def draw(self, offset):
+        screen_hull_offset = self.rect.topleft - offset
+        self.screen.blit(self.hull, screen_hull_offset)
+
+        screen_turret_offset = self.turret_rect.topleft - offset
+        self.screen.blit(self.turret, screen_turret_offset)
 
     @property
     def turret_rect(self):
