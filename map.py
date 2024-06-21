@@ -1,6 +1,7 @@
 import pygame
 import pytmx
 from pytmx.util_pygame import load_pygame
+from abc import ABC, abstractmethod
 
 
 class Tile(pygame.sprite.Sprite):
@@ -10,7 +11,13 @@ class Tile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=pos)
 
 
-class Map:
+class AbstractMap(ABC):
+    @abstractmethod
+    def create_surface(self):
+        pass
+
+
+class TMXMap(AbstractMap):
     def __init__(self, screen, map_path):
         self.screen = screen
         self.map = load_pygame(map_path)
@@ -47,8 +54,12 @@ class Map:
 
     def is_obstacle(self, x, y):
         """Check if the tile at the specified coordinates has the 'obstacle' property set to True."""
+        x, y = int(x / self.tile_width), int(y / self.tile_height)
+
         for layer in self.map.layers:
             if isinstance(layer, pytmx.TiledTileLayer):  # Ensure we only check tile layers
+                if x < 0 or y < 0 or x >= layer.width or y >= layer.height:
+                    return True
                 tile_properties = self.get_tile_properties(x, y, layer.name)
                 if tile_properties and tile_properties.get('is_obstacle'):
                     return True

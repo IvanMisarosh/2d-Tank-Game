@@ -31,7 +31,7 @@ class Tank:
         self._rect.center = self.pos
 
     def update(self, keys, mouse_pos, offset, dt):
-        # Adjust camera offset
+        # Adjust to compensate camera offset
         mouse_pos = mouse_pos + offset
         if keys:
             self.move(keys, dt)
@@ -82,10 +82,7 @@ class Tank:
             self._mask = pygame.mask.from_surface(self.hull)
 
     def check_for_obstacles(self):
-        tile_x = int(self.pos.x / self.game.map.tile_width)
-        tile_y = int(self.pos.y / self.game.map.tile_height)
-
-        return self.game.map.is_obstacle(tile_x, tile_y)
+        return self.game.map.is_obstacle(self.pos.x, self.pos.y)
 
     def shoot(self):
         return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90, owner=self)
