@@ -6,6 +6,7 @@ import enemy
 import random
 import map
 from entity_manager import EntityManager
+from camera import Camera
 
 
 class GameController:
@@ -21,7 +22,9 @@ class GameController:
         self.fog_of_war = pygame.Surface((self.screen.get_width(), self.screen.get_height()))
 
         self.player = tank.Tank(self, self.screen, self.screen.get_width() / 2, self.screen.get_height() / 2)
+
         self.entity_manager = EntityManager()
+        self.camera = Camera(self.screen, self.map, self.player, self.entity_manager)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -31,6 +34,9 @@ class GameController:
                 self.entity_manager.add_bullet(self.player.shoot())
 
     def update(self, keys, mouse_pos, dt):
+
+        # self.camera.update()
+
         if keys[pygame.K_g]:
             self.spawn_enemy()
 
@@ -69,18 +75,8 @@ class GameController:
         self.entity_manager.create_enemy(self, self.screen, new_enemy_pos)
 
     def draw(self):
-        # self.screen.fill((128, 0, 128))  # Purple background
-        self.map.draw()
-        # self.screen.blit(self.map, (0, 0))
-        self.player.draw()
-
-        for bullet in self.entity_manager.bullets:
-            bullet.draw()
-
-        for enemy_tank in self.entity_manager.enemies:
-            enemy_tank.draw()
-
-        pygame.display.flip()
+        # self.camera.update(self.clock.tick(60) / 1000)
+        self.camera.draw_2()
 
     def is_on_screen(self, obj):
         return 0 <= obj.pos.x <= self.screen.get_width() and 0 <= obj.pos.y <= self.screen.get_height()
