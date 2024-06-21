@@ -39,7 +39,8 @@ class GameController:
         if keys[pygame.K_g]:
             self.spawn_enemy()
 
-        self.player.update(keys, mouse_pos, dt)
+        self.player.update(keys, mouse_pos, self.camera.offset, dt)
+        pygame.display.set_caption(f"My Game - FPS: {self.clock.get_fps()}")
         self.update_bullets(dt)
         self.update_enemies(dt)
 
@@ -74,11 +75,13 @@ class GameController:
         self.entity_manager.create_enemy(self, self.screen, new_enemy_pos)
 
     def draw(self):
-        # self.camera.update(self.clock.tick(60) / 1000)
         self.camera.draw()
 
     def is_on_screen(self, obj):
-        return 0 <= obj.pos.x <= self.screen.get_width() and 0 <= obj.pos.y <= self.screen.get_height()
+        # Adjust camera offset
+        screen_pos = obj.rect.topleft - self.camera.offset
+
+        return 0 <= screen_pos[0] <= self.screen.get_width() and 0 <= screen_pos[1] <= self.screen.get_height()
 
     def run(self):
         while self.running:

@@ -30,13 +30,16 @@ class Tank:
         self.turret = self.original_turret
         self._rect.center = self.pos
 
-    def update(self, keys, mouse_pos, dt):
+    def update(self, keys, mouse_pos, offset, dt):
+        # Adjust camera offset
+        mouse_pos = mouse_pos + offset
         if keys:
             self.move(keys, dt)
 
         self.update_turret(mouse_pos)
 
     def update_turret(self, mouse_pos):
+
         self.turret_angle = math.degrees(math.atan2(-(mouse_pos[1] - self.pos.y), mouse_pos[0] - self.pos.x))
         # Rotate the turret
         self.turret = pygame.transform.rotate(self.original_turret, self.turret_angle - 90)
@@ -81,7 +84,6 @@ class Tank:
     def check_for_obstacles(self):
         tile_x = int(self.pos.x / self.game.map.tile_width)
         tile_y = int(self.pos.y / self.game.map.tile_height)
-        # print(tile_x, tile_y)
 
         return self.game.map.is_obstacle(tile_x, tile_y)
 

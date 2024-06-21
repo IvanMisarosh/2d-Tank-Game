@@ -23,17 +23,11 @@ class Camera:
         map_offset = self.map_rect.topleft - self.offset
         self.screen.blit(self.map_surface, map_offset)
 
-        # player_offset = self.player.rect.topleft - self.offset
         self.player.draw(self.offset)
-        # self.screen.blit(self.player.hull, player_offset)
 
         for enemy_tank in self.entity_manager.enemies:
-            # offset = enemy_tank.rect.topleft - self.offset
-            # self.screen.blit(enemy_tank.hull, offset)
             enemy_tank.draw(self.offset)
         for bullet in self.entity_manager.bullets:
-            # offset = bullet.rect.topleft - self.offset
-            # self.screen.blit(bullet.image, offset)
             bullet.draw(self.offset)
 
         pygame.display.flip()
