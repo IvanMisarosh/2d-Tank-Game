@@ -16,14 +16,14 @@ class Tank:
         self.original_hull = pygame.image.load("assets/hull2.png").convert_alpha()
         self.original_hull = pygame.transform.rotate(self.original_hull, 180)
         width, height = self.original_hull.get_size()
-        self.original_hull = pygame.transform.scale(self.original_hull, (width * 0.15, height * 0.15))
+        self.original_hull = pygame.transform.scale(self.original_hull, (width * 0.12, height * 0.12))
 
         self._rect = self.original_hull.get_rect()
         self._mask = pygame.mask.from_surface(self.original_hull)
 
         self.original_turret = pygame.image.load("assets/turret.png").convert_alpha()
         width, height = self.original_turret.get_size()
-        self.original_turret = pygame.transform.scale(self.original_turret, (width * 0.40, height * 0.40))
+        self.original_turret = pygame.transform.scale(self.original_turret, (width * 0.35, height * 0.35))
         self._turret_rect = self.original_turret.get_rect()
 
         self.hull = self.original_hull
@@ -61,12 +61,29 @@ class Tank:
         if keys[pygame.K_d]:
             self.hull_angle -= 100 * dt
 
+        # TO DO: Remove code duplication
         self.hull = pygame.transform.rotate(self.original_hull, self.hull_angle)
         self._rect = self.hull.get_rect(center=self.pos)
 
-        if self.game.check_player_collision():
+        self._rect.center = self.pos
+        self._mask = pygame.mask.from_surface(self.hull)
+
+        if self.game.check_player_collision() or self.check_for_obstacles():
             self.pos = original_pos
             self.hull_angle = original_hull_angle
+        else:
+            self.hull = pygame.transform.rotate(self.original_hull, self.hull_angle)
+            self._rect = self.hull.get_rect(center=self.pos)
+
+            self._rect.center = self.pos
+            self._mask = pygame.mask.from_surface(self.hull)
+
+    def check_for_obstacles(self):
+        tile_x = int(self.pos.x / self.game.map.tile_width)
+        tile_y = int(self.pos.y / self.game.map.tile_height)
+        # print(tile_x, tile_y)
+
+        return self.game.map.is_obstacle(tile_x, tile_y)
 
     def shoot(self):
         return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90, owner=self)
@@ -75,11 +92,6 @@ class Tank:
         # Blit the rotated hull and turret to the screen
         self.screen.blit(self.hull, self._rect)
         self.screen.blit(self.turret, self.turret_rect)
-
-        self._rect.center = self.pos
-        self._mask = pygame.mask.from_surface(self.hull)
-
-        # self.screen.blit(pygame.mask.from_surface(self.hull).to_surface(), self._rect)
 
     @property
     def turret_rect(self):

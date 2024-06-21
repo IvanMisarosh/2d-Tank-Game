@@ -4,6 +4,7 @@ import tank_shell
 import sys
 import enemy
 import random
+import map
 
 
 class GameController:
@@ -13,6 +14,10 @@ class GameController:
         pygame.display.set_caption("My Game")
         self.clock = pygame.time.Clock()
         self.running = True
+
+        self.map = map.Map(self.screen, "maps/plains_map.tmx")
+
+        self.fog_of_war = pygame.Surface((self.screen.get_width(), self.screen.get_height()))
 
         self.player = tank.Tank(self, self.screen, self.screen.get_width() / 2, self.screen.get_height() / 2)
         self._bullets: list[tank_shell.Shell] = []
@@ -66,7 +71,9 @@ class GameController:
         self.entities.append(new_enemy)
 
     def draw(self):
-        self.screen.fill((128, 0, 128))  # Purple background
+        # self.screen.fill((128, 0, 128))  # Purple background
+        self.map.draw()
+        # self.screen.blit(self.map, (0, 0))
         self.player.draw()
 
         for bullet in self.bullets:

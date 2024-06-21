@@ -24,10 +24,10 @@ class Shell:
 
         self.image = pygame.transform.rotate(self.original_image, self.angle + 90)
         self._rect = self.image.get_rect(center=self.pos)
+        self._mask = pygame.mask.from_surface(self.image)
 
     def draw(self):
         self.screen.blit(self.image, self._rect)
-        self._mask = pygame.mask.from_surface(self.image)
 
     def check_collision(self, other):
         if self.rect.colliderect(other.rect):
