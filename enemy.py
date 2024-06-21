@@ -4,10 +4,10 @@ import tank_shell
 
 
 class EnemyTank:
-    def __init__(self, game, screen, x, y):
+    def __init__(self, game, screen, pos):
         self.game = game
         self.screen = screen
-        self._pos = pygame.Vector2(x, y)
+        self._pos = pos
         self._hull_angle = 0
         self._turret_angle = 0
         self._speed = 300

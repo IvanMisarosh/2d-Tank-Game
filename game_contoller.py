@@ -5,6 +5,7 @@ import sys
 import enemy
 import random
 import map
+from entity_manager import EntityManager
 
 
 class GameController:
@@ -20,15 +21,14 @@ class GameController:
         self.fog_of_war = pygame.Surface((self.screen.get_width(), self.screen.get_height()))
 
         self.player = tank.Tank(self, self.screen, self.screen.get_width() / 2, self.screen.get_height() / 2)
-        self._bullets: list[tank_shell.Shell] = []
-        self._entities = []
+        self.entity_manager = EntityManager()
 
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.bullets.append(self.player.shoot())
+                self.entity_manager.bullets.append(self.player.shoot())
 
     def update(self, keys, mouse_pos, dt):
         if keys[pygame.K_g]:
@@ -41,34 +41,32 @@ class GameController:
         self.check_collisions()
 
     def check_collisions(self):
-        for bullet in self.bullets:
-            for enemy_tank in self.entities:
+        for bullet in self.entity_manager.bullets:
+            for enemy_tank in self.entity_manager.enemies:
                 if bullet.check_collision(enemy_tank):
-                    "Enemy hit!"
-                    self.bullets.remove(bullet)
-                    self.entities.remove(enemy_tank)
+                    self.entity_manager.bullets.remove(bullet)
+                    self.entity_manager.enemies.remove(enemy_tank)
                     break
 
     def check_player_collision(self):
-        for enemy_tank in self.entities:
+        for enemy_tank in self.entity_manager.enemies:
             if self.player.check_collision(enemy_tank):
                 return True
 
     def update_bullets(self, dt):
-        for bullet in self.bullets:
+        for bullet in self.entity_manager.bullets:
             bullet.update(dt)
             if not self.is_on_screen(bullet):
-                self.bullets.remove(bullet)
+                self.entity_manager.bullets.remove(bullet)
 
     def update_enemies(self, dt):
-        for enemy_tank in self.entities:
+        for enemy_tank in self.entity_manager.enemies:
             enemy_tank.update(dt)
 
     def spawn_enemy(self):
         new_enemy_pos = pygame.Vector2(random.randint(0, self.screen.get_width() - 50),
                                        random.randint(0, self.screen.get_height() - 50))
-        new_enemy = enemy.EnemyTank(self, self.screen, new_enemy_pos.x, new_enemy_pos.y)
-        self.entities.append(new_enemy)
+        self.entity_manager.create_enemy(self, self.screen, new_enemy_pos)
 
     def draw(self):
         # self.screen.fill((128, 0, 128))  # Purple background
@@ -76,10 +74,10 @@ class GameController:
         # self.screen.blit(self.map, (0, 0))
         self.player.draw()
 
-        for bullet in self.bullets:
+        for bullet in self.entity_manager.bullets:
             bullet.draw()
 
-        for enemy_tank in self.entities:
+        for enemy_tank in self.entity_manager.enemies:
             enemy_tank.draw()
 
         pygame.display.flip()
@@ -99,19 +97,3 @@ class GameController:
             self.draw()
         pygame.quit()
         sys.exit()
-
-    @property
-    def bullets(self):
-        return self._bullets
-
-    @bullets.setter
-    def bullets(self, value):
-        self._bullets = value
-
-    @property
-    def entities(self):
-        return self._entities
-
-    @entities.setter
-    def entities(self, value):
-        self._entities = value
