@@ -28,7 +28,7 @@ class GameController:
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                self.entity_manager.bullets.append(self.player.shoot())
+                self.entity_manager.add_bullet(self.player.shoot())
 
     def update(self, keys, mouse_pos, dt):
         if keys[pygame.K_g]:
@@ -44,8 +44,8 @@ class GameController:
         for bullet in self.entity_manager.bullets:
             for enemy_tank in self.entity_manager.enemies:
                 if bullet.check_collision(enemy_tank):
-                    self.entity_manager.bullets.remove(bullet)
-                    self.entity_manager.enemies.remove(enemy_tank)
+                    self.entity_manager.remove_bullet(bullet)
+                    self.entity_manager.remove_enemy(enemy_tank)
                     break
 
     def check_player_collision(self):
@@ -57,7 +57,7 @@ class GameController:
         for bullet in self.entity_manager.bullets:
             bullet.update(dt)
             if not self.is_on_screen(bullet):
-                self.entity_manager.bullets.remove(bullet)
+                self.entity_manager.remove_bullet(bullet)
 
     def update_enemies(self, dt):
         for enemy_tank in self.entity_manager.enemies:

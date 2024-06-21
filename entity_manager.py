@@ -30,3 +30,9 @@ class EntityManager:
     def create_enemy(self, game, screen, pos):
         self.enemies.append(EnemyTank(game, screen, pos))
 
+    def remove_enemy(self, enemy):
+        self.enemies.remove(enemy)
+
+    def remove_bullet(self, bullet):
+        self.bullets.remove(bullet)
+
