@@ -19,7 +19,7 @@ class GameController:
 
         self.entity_manager = EntityManager()
 
-        self.map = map.GridMap(self.entity_manager, "assets/map.txt")
+        self.map = map.GridMap(self.entity_manager, "maps/30_30_test_map.txt")
 
         self.player = tank.Tank(self, self.screen, self.screen.get_width() / 2, self.screen.get_height() / 2)
 

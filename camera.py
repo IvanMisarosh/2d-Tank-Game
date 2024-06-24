@@ -6,10 +6,6 @@ class Camera:
         self.screen = screen
         self.map = map
 
-        self.map_surface = map.create_surface()
-        # self.map_surface = screen
-        self.map_rect = self.map_surface.get_rect(topleft=(0, 0))
-
         self.player = player
         self.entity_manager = entity_manager
 
@@ -20,9 +16,6 @@ class Camera:
     def draw(self):
         self.screen.fill((255, 255, 255))
         self.centre_target_camera(self.player)
-
-        map_offset = self.map_rect.topleft - self.offset
-        self.screen.blit(self.map_surface, map_offset)
 
         for floor_tile in self.entity_manager.floor_tiles:
             floor_tile.draw(self.offset)

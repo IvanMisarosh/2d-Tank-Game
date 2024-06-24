@@ -40,7 +40,7 @@ class Map:
                         if color is None:
                             messagebox.showerror("Error", f"Invalid code: {code}")
                             return
-                        self.create_tile(j * 20, i * 20, color)
+                        self.create_tile(i * 20, j * 20, color)
 
         elif self.width and self.height:
             for x in range(0, self.width * 20, 20):
@@ -110,14 +110,25 @@ class MapBuilderApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Map Builder")
-        self.master.geometry("1000x600")
-        self.master.resizable(False, False)
+        self.master.geometry("1000x650")
+        # self.master.resizable(False, False)
 
-        self.canvas = tk.Canvas(self.master, width=800, height=600, bg="white")
-        self.canvas.grid(row=0, column=0)
+        self.canvas_frame = ttk.Frame(self.master)
+        self.canvas_frame.grid(row=0, column=0, sticky="nsew")
+
+        self.canvas = tk.Canvas(self.canvas_frame, width=800, height=600, bg="white")
+        self.canvas.grid(row=0, column=0, sticky="nsew")
+
+        self.h_scrollbar = ttk.Scrollbar(self.canvas_frame, orient="horizontal", command=self.canvas.xview)
+        self.h_scrollbar.grid(row=1, column=0, sticky="ew")
+
+        self.v_scrollbar = ttk.Scrollbar(self.canvas_frame, orient="vertical", command=self.canvas.yview)
+        self.v_scrollbar.grid(row=0, column=1, sticky="ns")
+
+        self.canvas.configure(xscrollcommand=self.h_scrollbar.set, yscrollcommand=self.v_scrollbar.set)
 
         self.controls = ttk.Frame(self.master)
-        self.controls.grid(row=0, column=1)
+        self.controls.grid(row=0, column=1, sticky="n")
 
         self.tile_types_frame = ttk.LabelFrame(self.controls, text="Tile Types")
         self.tile_types_frame.grid(row=0, column=0)
