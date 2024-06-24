@@ -5,9 +5,10 @@ from tank_shell import Shell
 
 class EntityManager:
     def __init__(self):
-        self.bullets = []
-        self.enemies = []
-        self.obstacles = []
+        self._bullets = []
+        self._enemies = []
+        self._obstacles = []
+        self._floor_tiles = []
 
     def add_bullet(self, bullet):
         self.bullets.append(bullet)
@@ -26,6 +27,20 @@ class EntityManager:
 
     def remove_obstacle(self, obstacle):
         self.obstacles.remove(obstacle)
+
+    def add_floor_tile(self, floor_tile):
+        self.floor_tiles.append(floor_tile)
+
+    def remove_floor_tile(self, floor_tile):
+        self.floor_tiles.remove(floor_tile)
+
+    @property
+    def floor_tiles(self):
+        return self._floor_tiles
+
+    @floor_tiles.setter
+    def floor_tiles(self, value):
+        self._floor_tiles = value
 
     @property
     def obstacles(self):
@@ -50,5 +65,3 @@ class EntityManager:
     @enemies.setter
     def enemies(self, value):
         self._enemies = value
-
-

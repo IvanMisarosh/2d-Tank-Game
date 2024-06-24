@@ -24,15 +24,19 @@ class Camera:
         map_offset = self.map_rect.topleft - self.offset
         self.screen.blit(self.map_surface, map_offset)
 
-        self.player.draw(self.offset)
-
-        for enemy_tank in self.entity_manager.enemies:
-            enemy_tank.draw(self.offset)
-        for bullet in self.entity_manager.bullets:
-            bullet.draw(self.offset)
+        for floor_tile in self.entity_manager.floor_tiles:
+            floor_tile.draw(self.offset)
 
         for obstacle in self.entity_manager.obstacles:
             obstacle.draw(self.offset)
+
+        for enemy_tank in self.entity_manager.enemies:
+            enemy_tank.draw(self.offset)
+
+        for bullet in self.entity_manager.bullets:
+            bullet.draw(self.offset)
+
+        self.player.draw(self.offset)
 
         pygame.display.flip()
 
