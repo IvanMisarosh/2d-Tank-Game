@@ -7,7 +7,7 @@ import random
 class Tile(ABC):
     texture = pygame.image.load("assets/default_texture.png")
 
-    def __init__(self, screen, x, y, width=TILE_SIZE, height=TILE_SIZE):
+    def __init__(self, screen, x, y):
         self.screen = screen
         self.image = self.texture
         self.rect = self.image.get_rect()
@@ -35,12 +35,12 @@ class Floor(Tile):
 
 
 class GridMap:
-    def __init__(self, screen, entity_manager, map_size, tile_size):
-        self.screen = screen
+    def __init__(self, entity_manager, map_path):
+        self.screen = pygame.display.get_surface()
         self.entity_manager = entity_manager
-        self.map_size = map_size
-        self.tile_size = tile_size
-        self.tiles = []
+        self.map_path = map_path
+        self.map_size = (MAP_WIDTH, MAP_HEIGHT)
+        self.tile_size = TILE_SIZE
 
     def draw_grid(self, surface):
         for x in range(0, self.map_size[0], self.tile_size):
