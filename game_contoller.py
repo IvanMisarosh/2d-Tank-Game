@@ -17,13 +17,12 @@ class GameController:
         self.clock = pygame.time.Clock()
         self.running = True
 
-        self.map = map.Map(self.screen, "maps/plains_map.tmx")
+        self.entity_manager = EntityManager()
 
-        self.fog_of_war = pygame.Surface((self.screen.get_width(), self.screen.get_height()))
+        self.map = map.GridMap(self.screen, self.entity_manager, (1280, 736), 32)
 
         self.player = tank.Tank(self, self.screen, self.screen.get_width() / 2, self.screen.get_height() / 2)
 
-        self.entity_manager = EntityManager()
         self.camera = Camera(self.screen, self.map, self.player, self.entity_manager)
 
     def handle_events(self):
@@ -48,16 +47,29 @@ class GameController:
 
     def check_collisions(self):
         for bullet in self.entity_manager.bullets:
-            for enemy_tank in self.entity_manager.enemies:
-                if bullet.check_collision(enemy_tank):
-                    self.entity_manager.remove_bullet(bullet)
-                    self.entity_manager.remove_enemy(enemy_tank)
-                    break
+            res = self.check_enemy_collision(bullet)
+            if res:
+                self.entity_manager.remove_bullet(bullet)
+                self.entity_manager.remove_enemy(res[1])
+
+            res = self.check_wall_collisions(bullet)
+            if res:
+                self.entity_manager.remove_bullet(bullet)
+                self.entity_manager.remove_obstacle(res[1])
 
     def check_player_collision(self):
+        if self.check_enemy_collision(self.player) or self.check_wall_collisions(self.player):
+            return True
+
+    def check_enemy_collision(self, entity):
         for enemy_tank in self.entity_manager.enemies:
-            if self.player.check_collision(enemy_tank):
-                return True
+            if entity.check_collision(enemy_tank):
+                return True, enemy_tank
+
+    def check_wall_collisions(self, entity):
+        for obstacle in self.entity_manager.obstacles:
+            if entity.check_collision(obstacle):
+                return True, obstacle
 
     def update_bullets(self, dt):
         for bullet in self.entity_manager.bullets:

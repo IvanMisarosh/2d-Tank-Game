@@ -7,6 +7,7 @@ class Camera:
         self.map = map
 
         self.map_surface = map.create_surface()
+        # self.map_surface = screen
         self.map_rect = self.map_surface.get_rect(topleft=(0, 0))
 
         self.player = player
@@ -17,7 +18,7 @@ class Camera:
         self.half_h = self.screen.get_height() / 2
 
     def draw(self):
-        self.screen.fill((0, 0, 0))
+        self.screen.fill((255, 255, 255))
         self.centre_target_camera(self.player)
 
         map_offset = self.map_rect.topleft - self.offset
@@ -29,6 +30,9 @@ class Camera:
             enemy_tank.draw(self.offset)
         for bullet in self.entity_manager.bullets:
             bullet.draw(self.offset)
+
+        for obstacle in self.entity_manager.obstacles:
+            obstacle.draw(self.offset)
 
         pygame.display.flip()
 

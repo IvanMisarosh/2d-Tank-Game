@@ -71,7 +71,7 @@ class Tank:
         self._rect.center = self.pos
         self._mask = pygame.mask.from_surface(self.hull)
 
-        if self.game.check_player_collision() or self.check_for_obstacles():
+        if self.game.check_player_collision():
             self.pos = original_pos
             self.hull_angle = original_hull_angle
         else:
@@ -80,9 +80,6 @@ class Tank:
 
             self._rect.center = self.pos
             self._mask = pygame.mask.from_surface(self.hull)
-
-    def check_for_obstacles(self):
-        return self.game.map.is_obstacle(self.pos.x, self.pos.y)
 
     def shoot(self):
         return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90, owner=self)
