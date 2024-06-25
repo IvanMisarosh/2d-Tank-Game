@@ -1,14 +1,12 @@
-import pygame
 from enemy import EnemyTank
-from tank_shell import Shell
+from settings import *
 
 
 class EntityManager:
     def __init__(self):
         self._bullets = []
         self._enemies = []
-        self._obstacles = []
-        self._floor_tiles = []
+        self.map_tiles = None
 
     def add_bullet(self, bullet):
         self.bullets.append(bullet)
@@ -22,33 +20,28 @@ class EntityManager:
     def remove_bullet(self, bullet):
         self.bullets.remove(bullet)
 
-    def add_obstacle(self, obstacle):
-        self.obstacles.append(obstacle)
+    def get_surronding_tiles(self, pos):
+        x, y = pos
+        x = int(x // TILE_SIZE)
+        y = int(y // TILE_SIZE)
+        directions = [
+            (-1, -1), (-1, 0), (-1, 1),  # Top-left, Top, Top-right
+            (0, -1),           (0, 1),  # Left,       , Right
+            (1, -1),  (1, 0),  (1, 1)  # Bottom-left, Bottom, Bottom-right
+        ]
 
-    def remove_obstacle(self, obstacle):
-        self.obstacles.remove(obstacle)
+        surrounding_elements = []
+        try:
+            surrounding_elements.append(self.map_tiles[x][y])
+        except IndexError:
+            pass
 
-    def add_floor_tile(self, floor_tile):
-        self.floor_tiles.append(floor_tile)
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < len(self.map_tiles) and 0 <= ny < len(self.map_tiles[0]):
+                surrounding_elements.append(self.map_tiles[nx][ny])
 
-    def remove_floor_tile(self, floor_tile):
-        self.floor_tiles.remove(floor_tile)
-
-    @property
-    def floor_tiles(self):
-        return self._floor_tiles
-
-    @floor_tiles.setter
-    def floor_tiles(self, value):
-        self._floor_tiles = value
-
-    @property
-    def obstacles(self):
-        return self._obstacles
-
-    @obstacles.setter
-    def obstacles(self, value):
-        self._obstacles = value
+        return surrounding_elements
 
     @property
     def bullets(self):

@@ -49,7 +49,7 @@ class EnemyTank:
         self.turret_rect = self.turret.get_rect(center=self.pos)
 
     def shoot(self):
-        return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90)
+        return tank_shell.Shell(self.game, copy.copy(self.pos), self.turret_angle - 90)
 
     def draw(self, offset):
         screen_hull_offset = self.rect.topleft - offset

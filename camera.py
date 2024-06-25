@@ -17,11 +17,15 @@ class Camera:
         self.screen.fill((255, 255, 255))
         self.centre_target_camera(self.player)
 
-        for floor_tile in self.entity_manager.floor_tiles:
-            floor_tile.draw(self.offset)
+        # for floor_tile in self.entity_manager.floor_tiles:
+        #     floor_tile.draw(self.offset)
+        #
+        # for obstacle in self.entity_manager.obstacles:
+        #     obstacle.draw(self.offset)
 
-        for obstacle in self.entity_manager.obstacles:
-            obstacle.draw(self.offset)
+        for i in range(self.map.map_size[0]):
+            for j in range(self.map.map_size[1]):
+                self.entity_manager.map_tiles[i][j].draw(self.offset)
 
         for enemy_tank in self.entity_manager.enemies:
             enemy_tank.draw(self.offset)

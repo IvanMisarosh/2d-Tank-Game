@@ -1,5 +1,5 @@
 import pygame
-import tank_shell
+from tank_shell import Shell
 import math
 import copy
 
@@ -30,11 +30,15 @@ class Tank:
         self.turret = self.original_turret
         self._rect.center = self.pos
 
+        self.occupied_tiles = []
+
     def update(self, keys, mouse_pos, offset, dt):
         # Adjust to compensate camera offset
         mouse_pos = mouse_pos + offset
         if keys:
             self.move(keys, dt)
+
+        self.occupied_tiles = self.game.entity_manager.get_surronding_tiles(self.pos)
 
         self.update_turret(mouse_pos)
 
@@ -82,7 +86,7 @@ class Tank:
             self._mask = pygame.mask.from_surface(self.hull)
 
     def shoot(self):
-        return tank_shell.Shell(self.screen, copy.copy(self.pos), self.turret_angle - 90, owner=self)
+        return Shell(self.game, copy.copy(self.pos), self.turret_angle - 90, owner=self)
 
     def draw(self, offset):
         screen_hull_offset = self.rect.topleft - offset

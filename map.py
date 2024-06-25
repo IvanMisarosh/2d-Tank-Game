@@ -1,7 +1,8 @@
 import pygame
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from settings import *
 import random
+import numpy as np
 
 
 color_codes = {
@@ -26,6 +27,11 @@ class Tile(ABC):
         screen_offset = self.rect.topleft - offset
         self.screen.blit(self.image, screen_offset)
 
+    @property
+    @abstractmethod
+    def is_obstacle(self):
+        pass
+
 
 class Wall(Tile):
     texture = pygame.image.load("assets/wall.png")
@@ -33,12 +39,20 @@ class Wall(Tile):
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y)
 
+    @property
+    def is_obstacle(self):
+        return True
+
 
 class Floor(Tile):
     texture = pygame.image.load("assets/floor.png")
 
     def __init__(self, screen, x, y):
         super().__init__(screen, x, y)
+
+    @property
+    def is_obstacle(self):
+        return False
 
 
 class GridMap:
@@ -52,13 +66,17 @@ class GridMap:
         self.load_map()
 
     def load_map(self):
+        map_tiles = []
         if self.map_path:
             with open(self.map_path, "r") as file:
                 lines = file.readlines()
-                self.map_size = map(int, lines[0].strip().split(","))
+                # self.map_size = map(int, lines[0].strip().split(","))
+                self.map_size = [int(x) for x in lines[0].strip().split(",")]
                 print(self.map_size)
                 for i, line in enumerate(lines[1:]):
+                    row = []
                     for j, code in enumerate(line.strip().split()):
+                        tile = None
                         color = None
                         if code in color_codes:
                             color = color_codes[code]
@@ -66,13 +84,16 @@ class GridMap:
                             # TODO: Handle error
                             return
                         if color == ORANGE:
-                            self.entity_manager.add_obstacle(Wall(self.screen, j * self.tile_size, i * self.tile_size))
+                            tile = Wall(self.screen, i * self.tile_size, j * self.tile_size)
                         elif color == BLACK:
-                            self.entity_manager.add_floor_tile(Floor(self.screen, j * self.tile_size, i * self.tile_size))
+                            tile = Floor(self.screen, i * self.tile_size, j * self.tile_size)
                         elif color == BLUE:
                             # TODO: Add spawn point tiles
                             # self.entity_manager.add_spawn_point(j * self.tile_size, i * self.tile_size)
                             pass
+                        row.append(tile)
+                    map_tiles.append(row)
+        self.entity_manager.map_tiles = map_tiles
 
     def draw_grid(self, surface):
         for x in range(0, self.map_size[0], self.tile_size):

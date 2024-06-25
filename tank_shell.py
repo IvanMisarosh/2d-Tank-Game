@@ -3,9 +3,10 @@ import math
 
 
 class Shell:
-    def __init__(self, screen, pos, angle, owner=None):
+    def __init__(self, game, pos, angle, owner=None):
         self.owner = owner
-        self.screen = screen
+        self.game = game
+        self.screen = pygame.display.get_surface()
         self._pos = pos
         self._angle = angle
         self._speed = 1000
@@ -18,6 +19,8 @@ class Shell:
         self._rect.center = self.pos
         self._mask = pygame.mask.from_surface(self.image)
 
+        self.occupied_tiles = []
+
     def update(self, dt):
         self.pos.y -= self.speed * dt * math.cos(math.radians(self.angle))
         self.pos.x -= self.speed * dt * math.sin(math.radians(self.angle))
@@ -25,6 +28,8 @@ class Shell:
         self.image = pygame.transform.rotate(self.original_image, self.angle + 90)
         self._rect = self.image.get_rect(center=self.pos)
         self._mask = pygame.mask.from_surface(self.image)
+
+        self.occupied_tiles = self.game.entity_manager.get_surronding_tiles(self.pos)
 
     def draw(self, offset):
         # self.screen.blit(self.image, self._rect)

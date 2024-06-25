@@ -55,7 +55,7 @@ class GameController:
             res = self.check_wall_collisions(bullet)
             if res:
                 self.entity_manager.remove_bullet(bullet)
-                self.entity_manager.remove_obstacle(res[1])
+                # self.entity_manager.remove_obstacle(res[1])
 
     def check_player_collision(self):
         if self.check_enemy_collision(self.player) or self.check_wall_collisions(self.player):
@@ -66,10 +66,10 @@ class GameController:
             if entity.check_collision(enemy_tank):
                 return True, enemy_tank
 
-    def check_wall_collisions(self, entity):
-        for obstacle in self.entity_manager.obstacles:
-            if entity.check_collision(obstacle):
-                return True, obstacle
+    def check_wall_collisions(self, entity: tank_shell.Shell | tank.Tank | enemy.EnemyTank):
+        for tile in entity.occupied_tiles:
+            if tile.is_obstacle and entity.check_collision(tile):
+                return True, tile
 
     def update_bullets(self, dt):
         for bullet in self.entity_manager.bullets:
