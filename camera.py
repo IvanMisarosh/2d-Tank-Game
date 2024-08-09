@@ -1,4 +1,5 @@
 import pygame
+from user_interface import UserInterface
 
 
 class Camera:
@@ -7,6 +8,7 @@ class Camera:
         self.map = map
 
         self.player = player
+        self.ui = UserInterface(player)
         self.entity_manager = entity_manager
 
         self.offset = pygame.Vector2(0, 0)
@@ -34,6 +36,8 @@ class Camera:
             bullet.draw(self.offset)
 
         self.player.draw(self.offset)
+
+        self.ui.draw()
 
         pygame.display.flip()
 

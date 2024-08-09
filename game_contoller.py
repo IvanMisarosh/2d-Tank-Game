@@ -7,7 +7,6 @@ import random
 import map
 from entity_manager import EntityManager
 from camera import Camera
-from player import Player
 
 
 class GameController:
@@ -22,7 +21,7 @@ class GameController:
 
         self.map = map.GridMap(self.entity_manager, "maps/30_30_test_map.txt")
 
-        self.player = Player(self, self.screen, self.screen.get_width() / 2, self.screen.get_height() / 2)
+        self.player = tank.Tank(self, self.screen, self.screen.get_width() / 2, self.screen.get_height() / 2)
 
         self.camera = Camera(self.screen, self.map, self.player, self.entity_manager)
 

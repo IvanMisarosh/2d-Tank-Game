@@ -1,10 +1,11 @@
 import pygame
+from tank import Tank
 
 
 class HealthBar:
-    def __init__(self, screen, health_percantage):
-        self.screen = screen
-        self.health_percantage = health_percantage
+    def __init__(self, player: Tank):
+        self.player = player
+        self.screen = player.screen
         self.margin_right = 20
         self.margin_bottom = 50
         self.rect_width = 154
@@ -31,9 +32,9 @@ class HealthBar:
         # self.health = self.get_random_health()
         pygame.draw.rect(self.screen, (255, 0, 0), (x + 2
                                                     , y + 2
-                                                    , int((self.rect_width - 4) * self.health_percantage)
+                                                    , int((self.rect_width - 4) * self.health_percentage)
                                                     , self.rect_height - 4))
 
-    def get_random_health(self):
-        import random
-        return random.randint(0, 100)
+    @property
+    def health_percentage(self):
+        return self.player.health_percentage
