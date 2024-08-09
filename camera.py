@@ -8,7 +8,7 @@ class Camera:
         self.map = map
 
         self.player = player
-        self.ui = UserInterface(player)
+        self.ui = UserInterface(player, debug=False)
         self.entity_manager = entity_manager
 
         self.offset = pygame.Vector2(0, 0)
