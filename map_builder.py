@@ -222,7 +222,7 @@ class MapBuilderApp:
         self.new_map(width, height)
         dialog.destroy()
 
-    def new_map(self, width, height):
+    def new_map(self, width=None, height=None):
         self.map = Map(self.canvas, width, height)
 
     def open_map(self):

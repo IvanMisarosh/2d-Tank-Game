@@ -40,3 +40,4 @@ class Camera:
     def centre_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
         self.offset.y = target.rect.centery - self.half_h
+

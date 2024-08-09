@@ -5,13 +5,16 @@ import copy
 
 
 class Tank:
-    def __init__(self, game, screen, x, y):
+    def __init__(self, game, screen, x, y, health=None):
         self.game = game
         self.screen = screen
         self._pos = pygame.Vector2(x, y)
         self._hull_angle = 0
         self._turret_angle = 0
         self._speed = 300
+
+        self.max_health = 200
+        self.health = health or self.max_health
 
         self.original_hull = pygame.image.load("assets/hull2.png").convert_alpha()
         self.original_hull = pygame.transform.rotate(self.original_hull, 180)
@@ -94,6 +97,10 @@ class Tank:
 
         screen_turret_offset = self.turret_rect.topleft - offset
         self.screen.blit(self.turret, screen_turret_offset)
+
+    @property
+    def health_percentage(self):
+        return self.health / self.max_health
 
     @property
     def turret_rect(self):
