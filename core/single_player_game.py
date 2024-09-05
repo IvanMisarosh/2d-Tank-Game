@@ -4,9 +4,10 @@ import random
 from world import map
 from core.entity_manager import EntityManager
 from core.camera import Camera
+from core.game_state import GameState
 
 
-class SinglePlayerGame:
+class SinglePlayerGame(GameState):
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.get_surface()
