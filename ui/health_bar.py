@@ -1,5 +1,5 @@
 import pygame
-from tank import Tank
+from entities.tank import Tank
 
 
 class HealthBar:

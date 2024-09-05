@@ -1,12 +1,10 @@
 import pygame
-import tank
-import tank_shell
 import sys
-import enemy
+from entities import enemy, tank, tank_shell
 import random
-import map
-from entity_manager import EntityManager
-from camera import Camera
+from world import map
+from core.entity_manager import EntityManager
+from core.camera import Camera
 
 
 class GameController:
@@ -58,8 +56,15 @@ class GameController:
                 # self.entity_manager.remove_obstacle(res[1])
 
     def check_player_collision(self):
-        if self.check_enemy_collision(self.player) or self.check_wall_collisions(self.player):
-            return True
+        collision = self.check_enemy_collision(self.player)
+
+        if collision:
+            return collision
+
+        collision = self.check_wall_collisions(self.player)
+
+        if collision:
+            return collision
 
     def check_enemy_collision(self, entity):
         for enemy_tank in self.entity_manager.enemies:

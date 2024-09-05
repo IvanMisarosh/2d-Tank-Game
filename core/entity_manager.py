@@ -1,5 +1,5 @@
-from enemy import EnemyTank
-from settings import *
+from entities.enemy import EnemyTank
+from core.settings import *
 
 
 class EntityManager:

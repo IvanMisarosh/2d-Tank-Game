@@ -1,5 +1,5 @@
 import pygame
-from tank_shell import Shell
+from entities.tank_shell import Shell
 import math
 import copy
 
@@ -12,6 +12,7 @@ class Tank:
         self._hull_angle = 0
         self._turret_angle = 0
         self._speed = 300
+        # self.max_speed = 300
 
         self.max_health = 200
         self.health = health or self.max_health
@@ -34,6 +35,9 @@ class Tank:
         self._rect.center = self.pos
 
         self.occupied_tiles = []
+
+        self.c_point = None
+        self.t_point = None
 
     def update(self, keys, mouse_pos, offset, dt):
         # Adjust to compensate camera offset
@@ -78,7 +82,8 @@ class Tank:
         self._rect.center = self.pos
         self._mask = pygame.mask.from_surface(self.hull)
 
-        if self.game.check_player_collision():
+        collision = self.game.check_player_collision()
+        if collision:
             self.pos = original_pos
             self.hull_angle = original_hull_angle
         else:
@@ -97,6 +102,13 @@ class Tank:
 
         screen_turret_offset = self.turret_rect.topleft - offset
         self.screen.blit(self.turret, screen_turret_offset)
+
+        if self.c_point:
+            pygame.draw.circle(self.screen, (255, 0, 0), self.c_point - offset, 5)
+            pygame.draw.circle(self.screen, (0, 255, 0), self.t_point - offset, 5)
+            pygame.draw.line(self.screen, (0, 0, 255), self.t_point - offset, self.c_point - offset, 2)
+
+
 
     @property
     def health_percentage(self):

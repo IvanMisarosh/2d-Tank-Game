@@ -1,9 +1,7 @@
 import pygame
-from abc import ABC, abstractmethod, abstractproperty
-from settings import *
+from abc import ABC, abstractmethod
+from core.settings import *
 import random
-import numpy as np
-
 
 color_codes = {
     "0": BLACK,

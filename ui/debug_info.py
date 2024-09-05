@@ -1,4 +1,4 @@
-from tank import Tank
+from entities.tank import Tank
 import pygame
 
 
@@ -11,7 +11,7 @@ class DebugInfo:
         text = (f"Player info:\n  Speed: {self.player.speed}\n  Position: {self.player.rect.topleft}\n  "
                 f"Hull angle: {round(self.player.hull_angle, 1)}\n  Turret angle: {round(self.player.turret_angle, 1)}\n  "
                 f"Max health: {self.player.max_health}\n  Current health: {self.player.health}\n  "
-                f"Health percentage: {self.player.health_percentage}")
+                f"Health percentage: {self.player.health_percentage}\n  Test hull angle: {round((self.player.hull_angle + 360) % 360, 1)}\n  ")
 
         self.box_text(self.player.screen, self.player.screen.get_width() - 210
                       , self.player.screen.get_width() - 20

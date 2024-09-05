@@ -1,5 +1,5 @@
 import pygame
-from user_interface import UserInterface
+from ui.user_interface import UserInterface
 
 
 class Camera:
@@ -8,7 +8,7 @@ class Camera:
         self.map = map
 
         self.player = player
-        self.ui = UserInterface(player, debug=False)
+        self.ui = UserInterface(player, debug=True)
         self.entity_manager = entity_manager
 
         self.offset = pygame.Vector2(0, 0)

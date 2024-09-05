@@ -1,6 +1,6 @@
 import pygame
 import copy
-import tank_shell
+import entities.tank_shell as tank_shell
 
 
 class EnemyTank:

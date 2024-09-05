@@ -1,6 +1,5 @@
-import pygame
-from health_bar import HealthBar
-from debug_info import DebugInfo
+from ui.health_bar import HealthBar
+from ui.debug_info import DebugInfo
 
 
 class UserInterface:
