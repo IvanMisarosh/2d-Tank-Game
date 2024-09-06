@@ -39,7 +39,7 @@ class Camera:
 
         self.ui.draw()
 
-        pygame.display.flip()
+        # pygame.display.flip()
 
     def centre_target_camera(self, target):
         self.offset.x = target.rect.centerx - self.half_w
