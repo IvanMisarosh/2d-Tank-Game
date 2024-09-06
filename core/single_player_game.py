@@ -9,7 +9,6 @@ from core.game_state import GameState
 
 class SinglePlayerGame(GameState):
     def __init__(self):
-        pygame.init()
         self.screen = pygame.display.get_surface()
 
         self.entity_manager = EntityManager()
@@ -20,18 +19,18 @@ class SinglePlayerGame(GameState):
 
         self.camera = Camera(self.screen, self.map, self.player, self.entity_manager)
 
-    def update(self, dt):
+    def update(self, dt, key_states):
 
         keys = pygame.key.get_pressed()
-        mouse_keys = pygame.mouse.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
 
         self.camera.centre_target_camera(self.player)
-        if keys[pygame.K_g]:
+        if key_states[pygame.K_g]:
             self.spawn_enemy()
-        if mouse_keys[0]:
-            # TODO: Add a delay between shots
+            key_states[pygame.K_g] = False
+        if key_states[pygame.BUTTON_LEFT]:
             self.entity_manager.add_bullet(self.player.shoot())
+            key_states[pygame.BUTTON_LEFT] = False
 
         self.player.update(keys, mouse_pos, self.camera.offset, dt)
         self.update_bullets(dt)
